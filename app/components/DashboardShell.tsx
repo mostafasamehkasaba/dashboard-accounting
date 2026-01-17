@@ -212,20 +212,47 @@ const DashboardShell = ({
       <main className="relative z-10 px-6 pb-16 pt-10 lg:pr-76 lg:pl-12">
         <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3 rounded-2xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2">
-              <div className="h-9 w-9 rounded-full bg-(--dash-panel-glass)" />
-              <div className="text-sm">
-                <p className="font-semibold">أحمد محمد</p>
-                <p className="text-xs text-(--dash-muted)">مدير النظام</p>
-              </div>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--dash-primary) text-white">
-                <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
-                  />
-                </svg>
-              </span>
+            <div className="relative" ref={profileMenuRef}>
+              <button
+                type="button"
+                onClick={() => setShowProfileMenu((prev) => !prev)}
+                className="flex items-center gap-3 rounded-2xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2 text-right"
+              >
+                <div className="h-9 w-9 rounded-full bg-(--dash-panel-glass)" />
+                <div className="text-sm">
+                  <p className="font-semibold">أحمد محمد</p>
+                  <p className="text-xs text-(--dash-muted)">مدير النظام</p>
+                </div>
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--dash-primary) text-white">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+                    <path
+                      fill="currentColor"
+                      d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
+                    />
+                  </svg>
+                </span>
+              </button>
+              {showProfileMenu ? (
+                <div className="absolute right-0 top-12 z-30 w-44 rounded-2xl border border-(--dash-border) bg-(--dash-panel) p-2 text-sm shadow-(--dash-shadow)">
+                  <Link
+                    href="/users"
+                    onClick={() => setShowProfileMenu(false)}
+                    className="block rounded-xl px-3 py-2 text-(--dash-text) hover:bg-(--dash-panel-soft)"
+                  >
+                    الملف الشخصي
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      showToast("تم تسجيل الخروج.", "info");
+                    }}
+                    className="block w-full rounded-xl px-3 py-2 text-right text-(--dash-text) hover:bg-(--dash-panel-soft)"
+                  >
+                    تسجيل الخروج
+                  </button>
+                </div>
+              ) : null}
             </div>
 
             <details ref={notificationsRef} className="relative">
