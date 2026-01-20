@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -29,9 +29,10 @@ const ThemeToggle = () => {
     <button
       type="button"
       onClick={handleToggle}
-      className="flex items-center gap-2 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-panel-soft)] px-4 py-2 text-sm text-[var(--dash-text)] transition hover:shadow-lg hover:shadow-[var(--dash-shadow)]"
+      aria-label={theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
+      className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-panel-soft)] text-[var(--dash-text)] transition hover:shadow-lg hover:shadow-[var(--dash-shadow)]"
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--dash-panel-glass)] text-[var(--dash-primary)]">
+      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--dash-panel-glass)] text-[var(--dash-primary)]">
         {theme === "dark" ? (
           <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
             <path
@@ -48,11 +49,13 @@ const ThemeToggle = () => {
           </svg>
         )}
       </span>
-      <span className="font-medium">
-        {theme === "dark" ? "الوضع الداكن" : "الوضع الفاتح"}
-      </span>
     </button>
   );
 };
 
 export default ThemeToggle;
+
+
+
+
+

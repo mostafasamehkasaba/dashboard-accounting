@@ -13,7 +13,7 @@ type Transfer = {
   fees: number;
   net: number;
   description: string;
-  status: "ظ…ظƒطھظ…ظ„" | "ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©";
+  status: "مكتمل" | "قيد المعالجة";
 };
 
 const transfersData: Transfer[] = [
@@ -21,49 +21,49 @@ const transfersData: Transfer[] = [
     id: "TRF-001",
     date: "2026-01-16",
     time: "14:30",
-    from: "ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©",
-    to: "ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ",
+    from: "الخزنة الرئيسية",
+    to: "بنك الرياض - حساب جاري",
     amount: 50000,
     fees: 0,
     net: 50000,
-    description: "طھط­ظˆظٹظ„ ظ…ظ† ط§ظ„ط®ط²ظ†ط© ط¥ظ„ظ‰ ط§ظ„ط¨ظ†ظƒ",
-    status: "ظ…ظƒطھظ…ظ„",
+    description: "تحويل من الخزنة إلى البنك",
+    status: "مكتمل",
   },
   {
     id: "TRF-002",
     date: "2026-01-15",
     time: "11:20",
-    from: "ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±",
-    to: "ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©",
+    from: "البنك الأهلي - حساب ادخار",
+    to: "الخزنة الرئيسية",
     amount: 30000,
     fees: 0,
     net: 30000,
-    description: "ط³ط­ط¨ ظ†ظ‚ط¯ظٹ ظ…ظ† ط§ظ„ط¨ظ†ظƒ",
-    status: "ظ…ظƒطھظ…ظ„",
+    description: "تحويل بين الخزنة والبنك",
+    status: "مكتمل",
   },
   {
     id: "TRF-003",
     date: "2026-01-14",
     time: "10:00",
-    from: "ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ",
-    to: "ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±",
+    from: "بنك الرياض - حساب جاري",
+    to: "البنك الأهلي - حساب ادخار",
     amount: 100000,
     fees: 50,
     net: 99950,
-    description: "طھط­ظˆظٹظ„ ط¨ظٹظ† ط§ظ„ط­ط³ط§ط¨ط§طھ ط§ظ„ط¨ظ†ظƒظٹط©",
-    status: "ظ…ظƒطھظ…ظ„",
+    description: "تحويل لدعم السيولة التشغيلية",
+    status: "مكتمل",
   },
   {
     id: "TRF-004",
     date: "2026-01-13",
     time: "13:45",
-    from: "ط®ط²ظ†ط© ط§ظ„ط¯ظˆظ„ط§ط±",
-    to: "HSBC - ط­ط³ط§ط¨ ط¨ط§ظ„ط¯ظˆظ„ط§ط±",
+    from: "خزنة المصروفات",
+    to: "HSBC - حساب دولاري",
     amount: 5000,
     fees: 10,
     net: 4990,
-    description: "ط¥ظٹط¯ط§ط¹ ط¯ظˆظ„ط§ط±ظٹ ظپظٹ ط§ظ„ط¨ظ†ظƒ",
-    status: "ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©",
+    description: "تحويل دولي من أحد البنوك",
+    status: "قيد المعالجة",
   },
 ];
 
@@ -72,7 +72,7 @@ const formatCurrency = (value: number, currency: string) =>
 
 const page = () => {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ظƒظ„ ط§ظ„ط­ط§ظ„ط§طھ");
+  const [statusFilter, setStatusFilter] = useState("كل الحالات");
   const [showNewTransfer, setShowNewTransfer] = useState(false);
   const [transfers, setTransfers] = useState<Transfer[]>(transfersData);
   const [showTransferView, setShowTransferView] = useState(false);
@@ -88,12 +88,12 @@ const page = () => {
 
   const stats = useMemo(() => {
     const total = transfers.reduce((sum, item) => sum + item.amount, 0);
-    const completed = transfers.filter((item) => item.status === "ظ…ظƒطھظ…ظ„").length;
-    const pending = transfers.filter((item) => item.status === "ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©").length;
+    const completed = transfers.filter((item) => item.status === "مكتمل").length;
+    const pending = transfers.filter((item) => item.status === "قيد المعالجة").length;
     const totalTransfers = transfers.length;
     return [
       {
-        label: "ط¥ط¬ظ…ط§ظ„ظٹ ط§ظ„طھط­ظˆظٹظ„ط§طھ",
+        label: "عدد التحويلات",
         value: totalTransfers.toString(),
         tone: "text-(--dash-primary)",
         icon: (
@@ -106,7 +106,7 @@ const page = () => {
         ),
       },
       {
-        label: "ظ…ظƒطھظ…ظ„ط©",
+        label: "مكتمل",
         value: completed.toString(),
         tone: "text-(--dash-success)",
         icon: (
@@ -119,7 +119,7 @@ const page = () => {
         ),
       },
       {
-        label: "ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©",
+        label: "قيد المعالجة",
         value: pending.toString(),
         tone: "text-(--dash-warning)",
         icon: (
@@ -132,8 +132,8 @@ const page = () => {
         ),
       },
       {
-        label: "ط¥ط¬ظ…ط§ظ„ظٹ ط§ظ„ظ…ط¨ط§ظ„ط؛",
-        value: formatCurrency(total, "ط±.ط³"),
+        label: "إجمالي المبلغ",
+        value: formatCurrency(total, "SAR"),
         tone: "text-(--dash-primary)",
         icon: (
           <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
@@ -156,7 +156,7 @@ const page = () => {
             .toLowerCase()
             .includes(normalizedQuery)
         : true;
-      const matchesStatus = statusFilter === "ظƒظ„ ط§ظ„ط­ط§ظ„ط§طھ" || item.status === statusFilter;
+      const matchesStatus = statusFilter === "كل الحالات" || item.status === statusFilter;
       return matchesQuery && matchesStatus;
     });
   }, [transfers, query, statusFilter]);
@@ -182,7 +182,7 @@ const page = () => {
       fees: Number.isNaN(feesValue) ? 0 : feesValue,
       net: amountValue - (Number.isNaN(feesValue) ? 0 : feesValue),
       description: formData.description.trim() || "-",
-      status: "ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©",
+      status: "قيد المعالجة",
     };
     setTransfers((prev) => [nextTransfer, ...prev]);
     setShowNewTransfer(false);
@@ -201,18 +201,18 @@ const page = () => {
 
   return (
     <DashboardShell
-      title="ط§ظ„طھط­ظˆظٹظ„ط§طھ ط§ظ„ظ…ط§ظ„ظٹط©"
-      subtitle="ط¥ط¯ط§ط±ط© ط§ظ„طھط­ظˆظٹظ„ط§طھ ط¨ظٹظ† ط§ظ„ط®ط²ظ† ظˆط§ظ„ط­ط³ط§ط¨ط§طھ ط§ظ„ط¨ظ†ظƒظٹط©"
+      title="التحويلات المالية"
+      subtitle="إدارة التحويلات المالية بين الخزائن والبنوك"
       searchValue={query}
       onSearchChange={setQuery}
-      searchPlaceholder="ط¨ط­ط« ظپظٹ ط§ظ„طھط­ظˆظٹظ„ط§طھ..."
+      searchPlaceholder="بحث في التحويلات المالية..."
       headerAction={
         <button
           type="button"
           onClick={() => setShowNewTransfer(true)}
           className="rounded-xl bg-(--dash-primary) px-4 py-2 text-xs font-semibold text-white shadow-(--dash-primary-soft)"
         >
-          طھط­ظˆظٹظ„ ط¬ط¯ظٹط¯ +
+          إضافة تحويل +
         </button>
       }
     >
@@ -241,32 +241,32 @@ const page = () => {
                 type="button"
                 className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-xs text-(--dash-muted)"
               >
-                طھطµط¯ظٹط±
+                تصفية
               </button>
               <select
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
                 className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-xs text-(--dash-text)"
               >
-                <option value="ظƒظ„ ط§ظ„ط­ط§ظ„ط§طھ">ظƒظ„ ط§ظ„ط­ط§ظ„ط§طھ</option>
-                <option value="ظ…ظƒطھظ…ظ„">ظ…ظƒطھظ…ظ„</option>
-                <option value="ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©">ظ‚ظٹط¯ ط§ظ„ظ…ط¹ط§ظ„ط¬ط©</option>
+                <option value="كل الحالات">كل الحالات</option>
+                <option value="مكتمل">مكتمل</option>
+                <option value="قيد المعالجة">قيد المعالجة</option>
               </select>
             </div>
-            <span className="text-xs text-(--dash-muted)">ط³ط¬ظ„ ط§ظ„طھط­ظˆظٹظ„ط§طھ</span>
+            <span className="text-xs text-(--dash-muted)">عرض التحويلات</span>
           </div>
 
           <div className="mt-6 overflow-hidden rounded-2xl border border-(--dash-border)">
             <div className="grid min-w-[980px] grid-cols-9 gap-4 border-b border-(--dash-border) bg-(--dash-panel-soft) px-4 py-3 text-xs font-semibold text-(--dash-muted)">
-              <span className="text-right">ط§ظ„طھط§ط±ظٹط®</span>
-              <span className="text-right">ظ…ظ†</span>
-              <span className="text-right">ط¥ظ„ظ‰</span>
-              <span className="text-right">ط§ظ„ظ…ط¨ظ„ط؛</span>
-              <span className="text-right">ط§ظ„ط±ط³ظˆظ…</span>
-              <span className="text-right">ط§ظ„طµط§ظپظٹ</span>
-              <span className="text-right">ط§ظ„ظˆطµظپ</span>
-              <span className="text-right">ط§ظ„ط­ط§ظ„ط©</span>
-              <span className="text-right">ط§ظ„ط¥ط¬ط±ط§ط،ط§طھ</span>
+              <span className="text-right">التاريخ</span>
+              <span className="text-right">من</span>
+              <span className="text-right">إلى</span>
+              <span className="text-right">المبلغ</span>
+              <span className="text-right">الرسوم</span>
+              <span className="text-right">الصافي</span>
+              <span className="text-right">الوصف</span>
+              <span className="text-right">الحالة</span>
+              <span className="text-right">الإجراءات</span>
             </div>
             {filteredTransfers.map((item) => (
               <div
@@ -288,7 +288,7 @@ const page = () => {
                 <span className="flex">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      item.status === "ظ…ظƒطھظ…ظ„"
+                      item.status === "مكتمل"
                         ? "bg-(--dash-success) text-white"
                         : "bg-(--dash-panel-glass) text-(--dash-muted)"
                     }`}
@@ -297,8 +297,12 @@ const page = () => {
                   </span>
                 </span>
                 <div className="flex items-center gap-3 text-(--dash-muted)">
-                  <button type="button" onClick={() => openTransferView(item)} className="text-xs text-(--dash-primary) hover:underline">
-                    ط¹ط±ط¶
+                  <button
+                    type="button"
+                    onClick={() => openTransferView(item)}
+                    className="text-xs text-(--dash-primary) hover:underline"
+                  >
+                    عرض
                   </button>
                 </div>
               </div>
@@ -312,7 +316,7 @@ const page = () => {
           <div className="w-full max-w-lg rounded-3xl border border-(--dash-border) bg-(--dash-panel) p-6 shadow-(--dash-shadow)">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">عرض التحويل</h3>
+                <h3 className="text-lg font-semibold">تفاصيل التحويل</h3>
                 <p className="text-xs text-(--dash-muted)">رقم التحويل: {activeTransfer.id}</p>
               </div>
               <button type="button" onClick={closeTransferView} className="text-sm text-(--dash-muted)">
@@ -359,31 +363,31 @@ const page = () => {
           <div className="w-full max-w-lg rounded-3xl border border-(--dash-border) bg-(--dash-panel) p-6 shadow-(--dash-shadow)">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">طھط­ظˆظٹظ„ ظ…ط§ظ„ظٹ ط¬ط¯ظٹط¯</h3>
-                <p className="text-xs text-(--dash-muted)">طھط­ظˆظٹظ„ ط§ظ„ط£ظ…ظˆط§ظ„ ط¨ظٹظ† ط§ظ„ط®ط²ط§ط¦ظ† ظˆط§ظ„ط­ط³ط§ط¨ط§طھ ط§ظ„ط¨ظ†ظƒظٹط©</p>
+                <h3 className="text-lg font-semibold">إضافة تحويل جديد</h3>
+                <p className="text-xs text-(--dash-muted)">أدخل بيانات التحويل بين الخزائن والبنوك</p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewTransfer(false)}
                 className="text-sm text-(--dash-muted)"
               >
-                أ—
+                إغلاق
               </button>
             </div>
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
-                <label className="text-xs text-(--dash-muted)">ظ…ظ†</label>
+                <label className="text-xs text-(--dash-muted)">من</label>
                 <select
                   value={formData.from}
                   onChange={(event) => handleFormChange("from", event.target.value)}
                   className="mt-2 w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-sm"
                 >
-                  <option value="">ط§ط®طھط± ط§ظ„ظ…طµط¯ط±</option>
-                  <option value="ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©">ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©</option>
-                  <option value="ط®ط²ظ†ط© ط§ظ„ظپط±ط¹ ط§ظ„ط´ظ…ط§ظ„ظٹ">ط®ط²ظ†ط© ط§ظ„ظپط±ط¹ ط§ظ„ط´ظ…ط§ظ„ظٹ</option>
-                  <option value="ط®ط²ظ†ط© ط§ظ„ط¯ظˆظ„ط§ط±">ط®ط²ظ†ط© ط§ظ„ط¯ظˆظ„ط§ط±</option>
-                  <option value="ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ">ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ</option>
-                  <option value="ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±">ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±</option>
+                  <option value="">اختر المصدر</option>
+                  <option value="الخزنة الرئيسية">الخزنة الرئيسية</option>
+                  <option value="خزنة المبيعات اليومية">خزنة المبيعات اليومية</option>
+                  <option value="خزنة المصروفات">خزنة المصروفات</option>
+                  <option value="بنك الرياض - حساب جاري">بنك الرياض - حساب جاري</option>
+                  <option value="البنك الأهلي - حساب ادخار">البنك الأهلي - حساب ادخار</option>
                 </select>
               </div>
               <div className="flex justify-center">
@@ -397,22 +401,22 @@ const page = () => {
                 </span>
               </div>
               <div>
-                <label className="text-xs text-(--dash-muted)">ط¥ظ„ظ‰</label>
+                <label className="text-xs text-(--dash-muted)">إلى</label>
                 <select
                   value={formData.to}
                   onChange={(event) => handleFormChange("to", event.target.value)}
                   className="mt-2 w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-sm"
                 >
-                  <option value="">ط§ط®طھط± ط§ظ„ظˆط¬ظ‡ط©</option>
-                  <option value="ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©">ط§ظ„ط®ط²ظ†ط© ط§ظ„ط±ط¦ظٹط³ظٹط©</option>
-                  <option value="ط®ط²ظ†ط© ط§ظ„ظپط±ط¹ ط§ظ„ط´ظ…ط§ظ„ظٹ">ط®ط²ظ†ط© ط§ظ„ظپط±ط¹ ط§ظ„ط´ظ…ط§ظ„ظٹ</option>
-                  <option value="ط®ط²ظ†ط© ط§ظ„ط¯ظˆظ„ط§ط±">ط®ط²ظ†ط© ط§ظ„ط¯ظˆظ„ط§ط±</option>
-                  <option value="ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ">ط§ظ„ط¨ظ†ظƒ ط§ظ„ط£ظ‡ظ„ظٹ - ط­ط³ط§ط¨ ط¬ط§ط±ظٹ</option>
-                  <option value="ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±">ظ…طµط±ظپ ط§ظ„ط±ط§ط¬ط­ظٹ - ط­ط³ط§ط¨ طھظˆظپظٹط±</option>
+                  <option value="">اختر الوجهة</option>
+                  <option value="الخزنة الرئيسية">الخزنة الرئيسية</option>
+                  <option value="خزنة المبيعات اليومية">خزنة المبيعات اليومية</option>
+                  <option value="خزنة المصروفات">خزنة المصروفات</option>
+                  <option value="بنك الرياض - حساب جاري">بنك الرياض - حساب جاري</option>
+                  <option value="البنك الأهلي - حساب ادخار">البنك الأهلي - حساب ادخار</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs text-(--dash-muted)">ط§ظ„ظ…ط¨ظ„ط؛</label>
+                <label className="text-xs text-(--dash-muted)">المبلغ</label>
                 <input
                   type="number"
                   min={0}
@@ -423,7 +427,7 @@ const page = () => {
                 />
               </div>
               <div>
-                <label className="text-xs text-(--dash-muted)">ط±ط³ظˆظ… ط§ظ„طھط­ظˆظٹظ„ (ط§ط®طھظٹط§ط±ظٹ)</label>
+                <label className="text-xs text-(--dash-muted)">الرسوم الإدارية (اختياري)</label>
                 <input
                   type="number"
                   min={0}
@@ -434,7 +438,7 @@ const page = () => {
                 />
               </div>
               <div>
-                <label className="text-xs text-(--dash-muted)">ط§ظ„ظˆطµظپ</label>
+                <label className="text-xs text-(--dash-muted)">الوصف</label>
                 <input
                   type="text"
                   value={formData.description}
@@ -443,7 +447,7 @@ const page = () => {
                 />
               </div>
               <div>
-                <label className="text-xs text-(--dash-muted)">ط±ظ‚ظ… ط§ظ„ظ…ط±ط¬ط¹</label>
+                <label className="text-xs text-(--dash-muted)">رقم المرجع</label>
                 <input
                   type="text"
                   value={formData.reference}
@@ -457,13 +461,13 @@ const page = () => {
                   onClick={() => setShowNewTransfer(false)}
                   className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2 text-xs text-(--dash-muted)"
                 >
-                  ط¥ظ„ط؛ط§ط،
+                  إلغاء
                 </button>
                 <button
                   type="submit"
                   className="rounded-xl bg-(--dash-primary) px-4 py-2 text-xs font-semibold text-white shadow-(--dash-primary-soft)"
                 >
-                  طھظ†ظپظٹط° ط§ظ„طھط­ظˆظٹظ„
+                  حفظ التحويل
                 </button>
               </div>
             </form>
@@ -475,5 +479,3 @@ const page = () => {
 };
 
 export default page;
-
-

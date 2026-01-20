@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import DashboardShell from "../components/DashboardShell";
 
 const stats = [
@@ -64,15 +64,15 @@ const stats = [
 
 const notifications = [
   {
-    text: "منتج XYZ - المخزون أقل من الحد الأدنى (5 وحدات متبقية)",
+    text: "منتج XYZ - المخزون أقل من الحد الأدنى (5 وحدات متبقية فقط).",
     tone: "border-(--dash-danger) bg-(--dash-danger-soft)",
   },
   {
-    text: "منتج ABC - تنتهي صلاحيتها خلال 7 أيام",
+    text: "منتج ABC - قرب انتهاء الصلاحية خلال 7 أيام.",
     tone: "border-(--dash-warning) bg-(--dash-warning-soft)",
   },
   {
-    text: "عميل رقم 1240 - موعد استحقاق فاتورة بعد 14 يوم",
+    text: "فاتورة رقم 1240 - تم تأخير السداد منذ 14 يوما.",
     tone: "border-(--dash-info) bg-(--dash-info-soft)",
   },
 ];
@@ -89,7 +89,7 @@ const revenuePoints = [
   { month: "يناير", sales: 42000, profit: 12000 },
   { month: "فبراير", sales: 50000, profit: 14000 },
   { month: "مارس", sales: 47000, profit: 13000 },
-  { month: "ابريل", sales: 61000, profit: 18000 },
+  { month: "أبريل", sales: 61000, profit: 18000 },
   { month: "مايو", sales: 54000, profit: 15000 },
   { month: "يونيو", sales: 68000, profit: 21000 },
 ];
@@ -97,7 +97,7 @@ const revenuePoints = [
 const invoices = [
   {
     id: "INV-001",
-    client: "شركة النور للتجارة",
+    client: "سارة أحمد",
     amount: "15,000 ريال",
     status: "مدفوعة",
     statusTone: "bg-(--dash-info-soft) text-(--dash-info)",
@@ -105,15 +105,15 @@ const invoices = [
   },
   {
     id: "INV-002",
-    client: "مؤسسة الأمل",
+    client: "عمر محمد",
     amount: "8,500 ريال",
-    status: "قيد الانتظار",
+    status: "قيد المراجعة",
     statusTone: "bg-(--dash-warning-soft) text-(--dash-warning)",
     date: "2026-01-14",
   },
   {
     id: "INV-003",
-    client: "شركة المستقبل",
+    client: "خالد إبراهيم",
     amount: "12,000 ريال",
     status: "مدفوعة",
     statusTone: "bg-(--dash-info-soft) text-(--dash-info)",
@@ -121,7 +121,7 @@ const invoices = [
   },
   {
     id: "INV-004",
-    client: "مؤسسة التقدم",
+    client: "منى يوسف",
     amount: "6,700 ريال",
     status: "متأخرة",
     statusTone: "bg-(--dash-danger-soft) text-(--dash-danger)",
@@ -129,9 +129,9 @@ const invoices = [
   },
   {
     id: "INV-005",
-    client: "شركة الإبداع",
+    client: "خالد ناصر",
     amount: "9,200 ريال",
-    status: "مدفوعة جزئيا",
+    status: "بانتظار الدفع",
     statusTone: "bg-(--dash-panel-glass) text-(--dash-muted)",
     date: "2026-01-13",
   },
@@ -181,15 +181,7 @@ const page = () => {
       return invoices;
     }
     return invoices.filter((item) => {
-      const haystack = [
-        item.id,
-        item.client,
-        item.amount,
-        item.status,
-        item.date,
-      ]
-        .join(" ")
-        .toLowerCase();
+      const haystack = [item.id, item.client, item.amount, item.status, item.date].join(" ").toLowerCase();
       return haystack.includes(query);
     });
   }, [invoiceQuery]);
@@ -203,7 +195,7 @@ const page = () => {
       searchPlaceholder="بحث في الفواتير بالرقم أو العميل أو الحالة..."
       exportData={{
         filename: "dashboard-invoices",
-        headers: ["رقم الفاتورة", "العميل", "المبلغ", "الحالة", "التاريخ"],
+        headers: ["رقم الفاتورة", "العميل", "الإجمالي", "الحالة", "التاريخ"],
         rows: filteredInvoices.map((item) => [item.id, item.client, item.amount, item.status, item.date]),
       }}
     >
@@ -215,14 +207,8 @@ const page = () => {
               className="rounded-3xl border border-(--dash-border) bg-(--dash-panel-soft) p-6 shadow-(--dash-shadow)"
             >
               <div className="flex items-start justify-between">
-                <span className="rounded-2xl bg-(--dash-panel-glass) p-3 text-(--dash-primary)">
-                  {item.icon}
-                </span>
-                <span
-                  className={`text-sm font-semibold ${
-                    item.positive ? "text-(--dash-success)" : "text-(--dash-danger)"
-                  }`}
-                >
+                <span className="rounded-2xl bg-(--dash-panel-glass) p-3 text-(--dash-primary)">{item.icon}</span>
+                <span className={`text-sm font-semibold ${item.positive ? "text-(--dash-success)" : "text-(--dash-danger)"}`}>
                   {item.change}
                 </span>
               </div>
@@ -240,7 +226,10 @@ const page = () => {
               <span className="rounded-full bg-(--dash-danger-soft) px-3 py-1 text-sm font-semibold text-(--dash-danger)">
                 3
               </span>
-              <h2 className="text-lg font-semibold">التنبيهات الهامة</h2>
+              <div>
+                <h2 className="text-lg font-semibold">التنبيهات الهامة</h2>
+                <p className="text-sm text-(--dash-muted)">تحتاج إلى اهتمامك الفوري</p>
+              </div>
             </div>
             <span className="rounded-full bg-(--dash-warning-soft) p-2 text-(--dash-warning)">
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -251,18 +240,18 @@ const page = () => {
               </svg>
             </span>
           </div>
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {notifications.map((note) => (
               <div
                 key={note.text}
-                className={`flex items-center justify-between rounded-2xl border p-4 text-sm text-(--dash-text) ${note.tone}`}
+                className={`rounded-2xl border p-4 text-sm text-(--dash-text) ${note.tone}`}
               >
-                <p>{note.text}</p>
+                <p className="font-semibold">{note.text}</p>
                 <button
                   type="button"
-                  className="rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-4 py-2 text-xs text-(--dash-text)"
+                  className="mt-4 w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-3 py-2 text-xs text-(--dash-text)"
                 >
-                  عرض
+                  اتخاذ إجراء
                 </button>
               </div>
             ))}
@@ -293,8 +282,8 @@ const page = () => {
 
         <div className="rounded-3xl border border-(--dash-border) bg-(--dash-panel) p-6 shadow-(--dash-shadow)">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">إجمالي الإيرادات (آخر 6 أشهر)</h2>
-            <span className="text-xs text-(--dash-muted)">تم التحديث</span>
+            <h2 className="text-lg font-semibold">المبيعات والأرباح (آخر 6 أشهر)</h2>
+            <span className="text-xs text-(--dash-muted)">نسبة الأداء الشهري</span>
           </div>
           <div className="mt-6">
             <div className="relative rounded-2xl bg-(--dash-panel-soft) px-6 py-4">
@@ -331,15 +320,11 @@ const page = () => {
                   );
                 })}
                 <path
-                  d={`${buildSmoothPath(salesPoints)} L ${chartWidth} ${chartHeight - chartPaddingY} L 0 ${
-                    chartHeight - chartPaddingY
-                  } Z`}
+                  d={`${buildSmoothPath(salesPoints)} L ${chartWidth} ${chartHeight - chartPaddingY} L 0 ${chartHeight - chartPaddingY} Z`}
                   fill="url(#salesFill)"
                 />
                 <path
-                  d={`${buildSmoothPath(profitPoints)} L ${chartWidth} ${chartHeight - chartPaddingY} L 0 ${
-                    chartHeight - chartPaddingY
-                  } Z`}
+                  d={`${buildSmoothPath(profitPoints)} L ${chartWidth} ${chartHeight - chartPaddingY} L 0 ${chartHeight - chartPaddingY} Z`}
                   fill="url(#profitFill)"
                 />
                 <path d={buildSmoothPath(salesPoints)} fill="none" stroke="var(--dash-primary)" strokeWidth="3" />
@@ -369,17 +354,17 @@ const page = () => {
               type="button"
               className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2 text-xs text-(--dash-muted)"
             >
-              عرض التقرير
+              تصدير التقرير
             </button>
           </div>
           <div className="mt-6 overflow-hidden rounded-2xl border border-(--dash-border)">
             <div className="grid grid-cols-6 gap-4 border-b border-(--dash-border) bg-(--dash-panel-soft) px-4 py-3 text-xs font-semibold text-(--dash-muted)">
               <span className="text-right">رقم الفاتورة</span>
               <span className="text-right">العميل</span>
-              <span className="text-right">المبلغ</span>
+              <span className="text-right">الإجمالي</span>
               <span className="text-right">الحالة</span>
               <span className="text-right">التاريخ</span>
-              <span className="text-right">الإجراءات</span>
+              <span className="text-right">الإجراء</span>
             </div>
             {filteredInvoices.map((item) => (
               <div
@@ -390,9 +375,7 @@ const page = () => {
                 <span>{item.client}</span>
                 <span>{item.amount}</span>
                 <span className="flex">
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.statusTone}`}>
-                    {item.status}
-                  </span>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.statusTone}`}>{item.status}</span>
                 </span>
                 <span className="text-(--dash-muted)">{item.date}</span>
                 <button type="button" className="text-xs text-(--dash-primary) hover:underline">
