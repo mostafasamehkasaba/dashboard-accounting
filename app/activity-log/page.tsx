@@ -17,8 +17,8 @@ type ActivityRecord = {
   ip: string;
 };
 
-const sections: Array<ActivitySection | "الكل"> = [
-  "الكل",
+const sections: Array<ActivitySection | "كل الكيانات"> = [
+  "كل الكيانات",
   "المستخدمين",
   "العملاء",
   "الفواتير",
@@ -27,90 +27,68 @@ const sections: Array<ActivitySection | "الكل"> = [
   "المحافظ",
 ];
 
-const actions: Array<ActivityAction | "الكل"> = ["الكل", "إضافة", "تعديل", "حذف", "تسجيل دخول"];
-
-const users = ["الكل", "أحمد محمد", "سارة علي", "خالد حسن", "ريم عمر"];
+const actions: Array<ActivityAction | "كل الاجراءات"> = ["كل الاجراءات", "إضافة", "تعديل", "حذف", "تسجيل دخول"];
 
 const activityRecords: ActivityRecord[] = [
   {
     id: "ACT-001",
-    user: "أحمد محمد",
+    user: "شريف السعد",
     section: "المستخدمين",
     action: "إضافة",
-    description: "إضافة مستخدم جديد باسم عبدالرحمن الغامدي",
+    description: "تمت إضافة مستخدم جديد إلى النظام",
     date: "2026-01-16",
     time: "10:15",
     ip: "192.168.1.100",
   },
   {
     id: "ACT-002",
-    user: "سارة علي",
+    user: "محمد حسن",
     section: "الفواتير",
     action: "تعديل",
-    description: "تعديل فاتورة INV-209 وتحديث طريقة الدفع",
+    description: "تم تعديل فاتورة INV-209 بقيمة 8,500",
     date: "2026-01-16",
     time: "11:05",
     ip: "192.168.1.104",
   },
   {
     id: "ACT-003",
-    user: "خالد حسن",
+    user: "سارة علي",
     section: "المدفوعات",
     action: "حذف",
-    description: "حذف عملية دفع PAY-332 بسبب تكرار الإدخال",
+    description: "تم حذف عملية دفع PAY-332",
     date: "2026-01-16",
     time: "11:40",
     ip: "192.168.1.88",
   },
   {
     id: "ACT-004",
-    user: "أحمد محمد",
+    user: "شريف السعد",
     section: "المشتريات",
     action: "إضافة",
-    description: "إضافة طلب شراء PUR-104 بقيمة 24,500 ر.س",
+    description: "تمت إضافة عملية شراء PUR-104 بقيمة 24,500",
     date: "2026-01-16",
     time: "12:10",
     ip: "192.168.1.100",
   },
   {
     id: "ACT-005",
-    user: "ريم عمر",
-    section: "المحافظ",
-    action: "تعديل",
-    description: "تحديث رصيد محفظة البنك الأهلي بعد إيداع جديد",
+    user: "أحمد صبحي",
+    section: "العملاء",
+    action: "تسجيل دخول",
+    description: "تسجيل دخول من لوحة التحكم",
     date: "2026-01-16",
     time: "12:55",
     ip: "192.168.1.112",
   },
   {
     id: "ACT-006",
-    user: "سارة علي",
-    section: "العملاء",
+    user: "منى سامي",
+    section: "المحافظ",
     action: "إضافة",
-    description: "إضافة عميل جديد باسم مؤسسة مدار التقنية",
+    description: "تم إنشاء محفظة جديدة للعميل",
     date: "2026-01-16",
     time: "13:20",
     ip: "192.168.1.104",
-  },
-  {
-    id: "ACT-007",
-    user: "خالد حسن",
-    section: "المدفوعات",
-    action: "تعديل",
-    description: "تعديل حالة السداد لدفعة PAY-228",
-    date: "2026-01-16",
-    time: "14:05",
-    ip: "192.168.1.88",
-  },
-  {
-    id: "ACT-008",
-    user: "أحمد محمد",
-    section: "المستخدمين",
-    action: "إضافة",
-    description: "إضافة صلاحية جديدة لمدير النظام",
-    date: "2026-01-16",
-    time: "14:30",
-    ip: "192.168.1.100",
   },
 ];
 
@@ -129,26 +107,23 @@ const actionBadge = (action: ActivityAction) => {
 
 const page = () => {
   const [query, setQuery] = useState("");
-  const [sectionFilter, setSectionFilter] = useState<ActivitySection | "الكل">("الكل");
-  const [actionFilter, setActionFilter] = useState<ActivityAction | "الكل">("الكل");
-  const [userFilter, setUserFilter] = useState("الكل");
-  const [timeFilter, setTimeFilter] = useState("اليوم");
+  const [sectionFilter, setSectionFilter] = useState<ActivitySection | "كل الكيانات">("كل الكيانات");
+  const [actionFilter, setActionFilter] = useState<ActivityAction | "كل الاجراءات">("كل الاجراءات");
 
   const filteredRecords = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return activityRecords.filter((record) => {
-      const matchesSection = sectionFilter === "الكل" || record.section === sectionFilter;
-      const matchesAction = actionFilter === "الكل" || record.action === actionFilter;
-      const matchesUser = userFilter === "الكل" || record.user === userFilter;
+      const matchesSection = sectionFilter === "كل الكيانات" || record.section === sectionFilter;
+      const matchesAction = actionFilter === "كل الاجراءات" || record.action === actionFilter;
       const matchesQuery = normalizedQuery
         ? [record.user, record.section, record.action, record.description, record.ip]
             .join(" ")
             .toLowerCase()
             .includes(normalizedQuery)
         : true;
-      return matchesSection && matchesAction && matchesUser && matchesQuery;
+      return matchesSection && matchesAction && matchesQuery;
     });
-  }, [query, sectionFilter, actionFilter, userFilter]);
+  }, [query, sectionFilter, actionFilter]);
 
   const stats = useMemo(() => {
     const total = activityRecords.length;
@@ -156,7 +131,7 @@ const page = () => {
     const edited = activityRecords.filter((record) => record.action === "تعديل").length;
     const deleted = activityRecords.filter((record) => record.action === "حذف").length;
     return [
-      { label: "إجمالي الأنشطة", value: total.toString(), tone: "text-(--dash-primary)" },
+      { label: "إجمالي النشاطات", value: total.toString(), tone: "text-(--dash-primary)" },
       { label: "عمليات الإضافة", value: added.toString(), tone: "text-(--dash-success)" },
       { label: "عمليات التعديل", value: edited.toString(), tone: "text-(--dash-warning)" },
       { label: "عمليات الحذف", value: deleted.toString(), tone: "text-(--dash-danger)" },
@@ -165,24 +140,8 @@ const page = () => {
 
   return (
     <DashboardShell
-      title="سجل الأنشطة"
+      title="سجل النشاطات"
       subtitle="عرض كل الحركات الخاصة بالحساب في لوحة التحكم"
-      headerAction={
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2 text-xs text-(--dash-muted)"
-          >
-            تحميل التقرير
-          </button>
-          <button
-            type="button"
-            className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-4 py-2 text-xs text-(--dash-muted)"
-          >
-            طباعة
-          </button>
-        </div>
-      }
     >
       <section>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -213,7 +172,7 @@ const page = () => {
           <div className="flex flex-wrap items-center gap-3">
             <select
               value={sectionFilter}
-              onChange={(event) => setSectionFilter(event.target.value as ActivitySection | "الكل")}
+              onChange={(event) => setSectionFilter(event.target.value as ActivitySection | "كل الكيانات")}
               className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-xs text-(--dash-text)"
             >
               {sections.map((option) => (
@@ -224,21 +183,10 @@ const page = () => {
             </select>
             <select
               value={actionFilter}
-              onChange={(event) => setActionFilter(event.target.value as ActivityAction | "الكل")}
+              onChange={(event) => setActionFilter(event.target.value as ActivityAction | "كل الاجراءات")}
               className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-xs text-(--dash-text)"
             >
               {actions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <select
-              value={userFilter}
-              onChange={(event) => setUserFilter(event.target.value)}
-              className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-2 text-xs text-(--dash-text)"
-            >
-              {users.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
@@ -254,8 +202,8 @@ const page = () => {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="بحث عن المستخدم أو العملية..."
-                className="dash-input w-full rounded-xl border border-(--dash-border) pr-9"
+                placeholder="ابحث عن المستخدم أو القسم..."
+                className="dash-input h-11 w-full rounded-xl border border-(--dash-border) pr-9 transition"
               />
             </div>
           </div>
@@ -263,28 +211,8 @@ const page = () => {
           <div className="mt-6 overflow-hidden rounded-2xl border border-(--dash-border)">
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-(--dash-border) bg-(--dash-panel-soft) px-4 py-3">
               <div>
-                <p className="text-sm font-semibold text-(--dash-text)">السجل اليومي للنشاط</p>
-                <p className="text-xs text-(--dash-muted)">تم تسجيل {filteredRecords.length} حركة</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <select
-                  value={timeFilter}
-                  onChange={(event) => setTimeFilter(event.target.value)}
-                  className="rounded-xl border border-(--dash-border) bg-(--dash-panel-soft) px-3 py-1.5 text-xs text-(--dash-text)"
-                >
-                  <option value="اليوم">اليوم</option>
-                  <option value="هذا الأسبوع">هذا الأسبوع</option>
-                  <option value="هذا الشهر">هذا الشهر</option>
-                </select>
-                <button
-                  type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-(--dash-border) bg-(--dash-panel) text-(--dash-success)"
-                  aria-label="إضافة فلتر سريع"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-                    <path fill="currentColor" d="M11 5h2v14h-2zM5 11h14v2H5z" />
-                  </svg>
-                </button>
+                <p className="text-sm font-semibold text-(--dash-text)">أحدث النشاطات داخل المنصة</p>
+                <p className="text-xs text-(--dash-muted)">تم العثور على {filteredRecords.length} نتيجة</p>
               </div>
             </div>
 

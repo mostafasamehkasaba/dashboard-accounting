@@ -239,6 +239,9 @@ const page = () => {
         <div className="rounded-3xl border border-(--dash-border) bg-(--dash-panel) p-6 shadow-(--dash-shadow)">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <span className="rounded-full bg-(--dash-danger-soft) px-3 py-1 text-sm font-semibold text-(--dash-danger)">
+                {alerts.length}
+              </span>
               <h2 className="text-lg font-semibold">التنبيهات</h2>
             </div>
             <span className="rounded-full bg-(--dash-warning-soft) p-2 text-(--dash-warning)">
@@ -250,19 +253,19 @@ const page = () => {
               </svg>
             </span>
           </div>
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {alerts.map((alert) => (
               <div
                 key={alert.title}
-                className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4 text-sm ${alert.tone}`}
+                className={`flex h-full flex-col rounded-2xl border p-4 text-sm text-(--dash-text) ${alert.tone}`}
               >
                 <div>
-                  <p className="font-semibold text-(--dash-text)">{alert.title}</p>
+                  <p className="font-semibold">{alert.title}</p>
                   <p className="mt-1 text-xs text-(--dash-muted)">{alert.description}</p>
                 </div>
                 <button
                   type="button"
-                  className="rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-4 py-2 text-xs text-(--dash-text)"
+                  className="mt-3 w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-4 py-2 text-xs text-(--dash-text)"
                 >
                   طلب الآن
                 </button>

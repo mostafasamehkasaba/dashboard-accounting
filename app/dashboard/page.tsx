@@ -244,12 +244,12 @@ const page = () => {
             {notifications.map((note) => (
               <div
                 key={note.text}
-                className={`rounded-2xl border p-4 text-sm text-(--dash-text) ${note.tone}`}
+                className={`flex h-full flex-col rounded-2xl border p-4 text-sm text-(--dash-text) ${note.tone}`}
               >
                 <p className="font-semibold">{note.text}</p>
                 <button
                   type="button"
-                  className="mt-4 w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-3 py-2 text-xs text-(--dash-text)"
+                  className="mt-auto w-full rounded-xl border border-(--dash-border) bg-(--dash-panel-glass) px-3 py-2 text-xs text-(--dash-text)"
                 >
                   اتخاذ إجراء
                 </button>
@@ -391,3 +391,4 @@ const page = () => {
 };
 
 export default page;
+
